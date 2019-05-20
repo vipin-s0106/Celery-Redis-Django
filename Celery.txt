@@ -2,7 +2,7 @@ Link 'https://realpython.com/asynchronous-tasks-with-django-and-celery/'
 
 
 
-pip install celery
+pip install celery==3.1.26.post2
 
 Step 1: Add celery.py
 
@@ -53,24 +53,24 @@ Once Redis is up, add the following code to your settings.py file:
 # CELERY STUFF
 BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'Africa/Nairobi'
+CELERY_ACCEPT_CONTENT = ['pickle']
+CELERY_TASK_SERIALIZER = 'pickle'
+CELERY_RESULT_SERIALIZER = 'pickle'
+CELERY_TIMEZONE = 'India/Kolkata'
 
 
 
-pip install redis
+pip install redis==2.10.6
 
 
 Now open CMD at project location
 and Run below command
 
-celery -A picha worker -l info
+celery -A ECartApplication worker -l info
 if run close the task CTRL+C
 
 
-celery -A picha beat -l info
+celery -A ECartApplication beat -l info
 if run close the task CTRL+C
 
 
@@ -87,9 +87,13 @@ app = Celery('user',broker='redis://localhost:6379')
 
 @app.task
 def send_email(to_email,message):
-    print("Sending Email")
-    email = EmailMessage('Checking Asynchronous Task', message, to=[to_email])
-    email.send()
+    time1 = 1
+    while(time1 != 5):
+        print("Sending Email ",time1)
+        email = EmailMessage('Checking Asynchronous Task', message+" : "+str(time1), to=[to_email])
+        email.send()
+        time.sleep(1)
+        time1 += 1
 	
 	
 Now call the App into Userlogin views
@@ -103,9 +107,9 @@ print("sent for Queue")
 
 Now Run the Django Server
 Celery Server is running
-Now open Two CMD window to check log level info wheather code is working or not
-celery -A picha worker -l info   in one Window
-celery -A picha beat -l info     in Second Window
+Now open Two CMD window to check log level info weather code is working or not
+celery -A ECartApplication worker -l info   in one Window
+celery -A ECartApplication beat -l info     in Second Window
 
 
 Now try to login and check the log
